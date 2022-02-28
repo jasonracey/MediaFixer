@@ -76,6 +76,6 @@ bool TryGetFiles(string? path, out string[] filePaths)
     if (string.IsNullOrWhiteSpace(path))
         throw new ArgumentNullException(nameof(path));
     
-    filePaths = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
+    filePaths = Directory.GetFiles(path, "*.mp3", SearchOption.AllDirectories);
     return filePaths.Any();
 }

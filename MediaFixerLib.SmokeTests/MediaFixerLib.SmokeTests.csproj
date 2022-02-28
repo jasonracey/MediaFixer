@@ -18,4 +18,11 @@
       <ProjectReference Include="..\MediaFixerLib\MediaFixerLib.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="~\TrackNames.txt" />
+      <Content Include="~\TrackNames.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>
