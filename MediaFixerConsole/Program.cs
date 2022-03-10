@@ -18,6 +18,7 @@ Parser.Default
     .ParseArguments<Options>(args)
     .WithParsed(RunSelectedOptions);
 
+Console.WriteLine("Done!");
 Console.WriteLine();
 Console.WriteLine("Thanks for using Media Fixer.");
 Console.WriteLine();
@@ -57,18 +58,8 @@ void RunSelectedOptions(Options options)
         if (options.SetAlbumNames)
             workflows.Add(Workflow.Create(name: WorkflowName.SetAlbumNames));
 
-        var timer = new Timer(TimerCallback, null, 0, 2000);
         mediaFixer.FixMedia(filePaths, workflows);
-        timer.Dispose();
     }
-}
-
-void TimerCallback(object? obj)
-{
-    var pct = mediaFixer.ItemsTotal > 0
-        ? mediaFixer.ItemsProcessed / mediaFixer.ItemsTotal
-        : 0;
-    Console.WriteLine($"{pct}% {mediaFixer.Message}");
 }
 
 bool TryGetFiles(string? path, out string[] filePaths)
