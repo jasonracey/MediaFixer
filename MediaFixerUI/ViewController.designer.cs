@@ -41,6 +41,9 @@ namespace MediaFixerUI
 		AppKit.NSButton CheckGratefulDead { get; set; }
 
 		[Outlet]
+		AppKit.NSProgressIndicator Progress { get; set; }
+
+		[Outlet]
 		AppKit.NSButton RadioFixTracks { get; set; }
 
 		[Outlet]
@@ -48,6 +51,9 @@ namespace MediaFixerUI
 
 		[Outlet]
 		AppKit.NSButton RadioSetAlbumNames { get; set; }
+
+		[Outlet]
+		AppKit.NSTextField Status { get; set; }
 
 		[Outlet]
 		AppKit.NSTabViewItem TabEditTracks { get; set; }
@@ -69,57 +75,6 @@ namespace MediaFixerUI
 
 		[Outlet]
 		AppKit.NSTextField TextReplace { get; set; }
-
-		[Action ("ButtonClearFindReplaceClicked:")]
-		partial void ButtonClearFindReplaceClicked (Foundation.NSObject sender);
-
-		[Action ("ButtonClearImportTrackNamesClicked:")]
-		partial void ButtonClearImportTrackNamesClicked (Foundation.NSObject sender);
-
-		[Action ("ButtonSelectFileClicked:")]
-		partial void ButtonSelectFileClicked (Foundation.NSObject sender);
-
-		[Action ("ButtonStartEditClicked:")]
-		partial void ButtonStartEditClicked (Foundation.NSObject sender);
-
-		[Action ("ButtonStartFindReplaceClicked:")]
-		partial void ButtonStartFindReplaceClicked (Foundation.NSObject sender);
-
-		[Action ("ButtonStartImportTrackNamesClicked:")]
-		partial void ButtonStartImportTrackNamesClicked (Foundation.NSObject sender);
-
-		[Action ("FindTextChanged:")]
-		partial void FindTextChanged (Foundation.NSObject sender);
-
-		[Action ("FixTracksClicked:")]
-		partial void FixTracksClicked (Foundation.NSObject sender);
-
-		[Action ("FixTracksSelected:")]
-		partial void FixTracksSelected (Foundation.NSObject sender);
-
-		[Action ("FixTracksToggled:")]
-		partial void FixTracksToggled (Foundation.NSObject sender);
-
-		[Action ("MergeAlbumsToggled:")]
-		partial void MergeAlbumsToggled (Foundation.NSObject sender);
-
-		[Action ("ResetClicked:")]
-		partial void ResetClicked (Foundation.NSObject sender);
-
-		[Action ("SelectDirectoryClicked:")]
-		partial void SelectDirectoryClicked (Foundation.NSObject sender);
-
-		[Action ("SetAlbumNamesSelected:")]
-		partial void SetAlbumNamesSelected (Foundation.NSObject sender);
-
-		[Action ("SetAlbumNamesToggled:")]
-		partial void SetAlbumNamesToggled (Foundation.NSObject sender);
-
-		[Action ("TextDirectoryChanged:")]
-		partial void TextDirectoryChanged (Foundation.NSObject sender);
-
-		[Action ("TextFindChanged:")]
-		partial void TextFindChanged (Foundation.NSObject sender);
 
 		void ReleaseDesignerOutlets ()
 		{
@@ -216,6 +171,16 @@ namespace MediaFixerUI
 			if (ButtonStartImportTrackNames != null) {
 				ButtonStartImportTrackNames.Dispose ();
 				ButtonStartImportTrackNames = null;
+			}
+
+			if (Progress != null) {
+				Progress.Dispose ();
+				Progress = null;
+			}
+
+			if (Status != null) {
+				Status.Dispose ();
+				Status = null;
 			}
 
 		}
