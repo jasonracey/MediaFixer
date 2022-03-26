@@ -1,8 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using MediaFixerLib.Fixer;
 
-namespace MediaFixerLib.Workflow;
-
-public class MergeAlbumsWorkflowRunner : IWorkflowRunner
+namespace MediaFixerLib.Workflow
+{
+    public class MergeAlbumsWorkflowRunner : IWorkflowRunner
 {
     public void Run(WorkflowRunnerInfo workflowRunnerInfo, ref MediaFixerStatus mediaFixerStatus)
     {
@@ -63,4 +66,5 @@ public class MergeAlbumsWorkflowRunner : IWorkflowRunner
             mediaFixerStatus.ItemProcessed();
         }
     }
+}
 }

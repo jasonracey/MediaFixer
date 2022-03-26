@@ -1,24 +1,27 @@
-﻿namespace MediaFixerLib.Workflow;
+﻿using System.Collections.Generic;
 
-public static class TrackComparerFactory
+namespace MediaFixerLib.Workflow
 {
-    public static IComparer<TagLib.File> GetTrackComparer(IEnumerable<TagLib.File> tracks)
+    public static class TrackComparerFactory
     {
-        var trackNumbers = new HashSet<string>();
-
-        foreach (var track in tracks)
+        public static IComparer<TagLib.File> GetTrackComparer(IEnumerable<TagLib.File> tracks)
         {
-            var key = track.GetKey();
-            if (track.Tag.Track != 0 && !trackNumbers.Contains(key))
-            {
-                trackNumbers.Add(key);
-            }
-            else
-            {
-                return new TrackNameComparer();
-            }
-        }
+            var trackNumbers = new HashSet<string>();
 
-        return new TrackDiscAndNumberComparer();
+            foreach (var track in tracks)
+            {
+                var key = track.GetKey();
+                if (track.Tag.Track != 0 && !trackNumbers.Contains(key))
+                {
+                    trackNumbers.Add(key);
+                }
+                else
+                {
+                    return new TrackNameComparer();
+                }
+            }
+
+            return new TrackDiscAndNumberComparer();
+        }
     }
 }

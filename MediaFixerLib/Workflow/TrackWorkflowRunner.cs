@@ -1,8 +1,10 @@
+using System;
+using System.Linq;
 using MediaFixerLib.Fixer;
 
-namespace MediaFixerLib.Workflow;
-
-public class TrackWorkflowRunner : IWorkflowRunner
+namespace MediaFixerLib.Workflow
+{
+    public class TrackWorkflowRunner : IWorkflowRunner
 {
     public void Run(WorkflowRunnerInfo workflowRunnerInfo, ref MediaFixerStatus mediaFixerStatus)
     {
@@ -50,4 +52,5 @@ public class TrackWorkflowRunner : IWorkflowRunner
             mediaFixerStatus.ItemProcessed();
         }
     }
+}
 }

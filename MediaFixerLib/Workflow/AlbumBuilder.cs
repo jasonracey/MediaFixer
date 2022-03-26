@@ -1,34 +1,38 @@
-﻿namespace MediaFixerLib.Workflow;
+﻿using System;
+using System.Collections.Generic;
 
-public static class AlbumBuilder
+namespace MediaFixerLib.Workflow
 {
-    public static IDictionary<string, IList<TagLib.File>> BuildAlbums(IList<TagLib.File> tracksToFix, ref MediaFixerStatus mediaFixerStatus)
+    public static class AlbumBuilder
     {
-        if (tracksToFix == null) throw new ArgumentNullException(nameof(tracksToFix));
-
-        mediaFixerStatus = MediaFixerStatus.Create(tracksToFix.Count, MediaFixerStatus.GeneratingAlbumList);
-
-        var albums = new SortedDictionary<string, IList<TagLib.File>>();
-
-        foreach (var track in tracksToFix)
+        public static IDictionary<string, IList<TagLib.File>> BuildAlbums(IList<TagLib.File> tracksToFix, ref MediaFixerStatus mediaFixerStatus)
         {
-            if (string.IsNullOrWhiteSpace(track.Tag.Album))
+            if (tracksToFix == null) throw new ArgumentNullException(nameof(tracksToFix));
+
+            mediaFixerStatus = MediaFixerStatus.Create(tracksToFix.Count, MediaFixerStatus.GeneratingAlbumList);
+
+            var albums = new SortedDictionary<string, IList<TagLib.File>>();
+
+            foreach (var track in tracksToFix)
             {
-                throw new MediaFixerException(MediaFixerException.Reason.MissingAlbumName);
+                if (string.IsNullOrWhiteSpace(track.Tag.Album))
+                {
+                    throw new MediaFixerException(MediaFixerException.Reason.MissingAlbumName);
+                }
+
+                if (!albums.ContainsKey(track.Tag.Album))
+                {
+                    albums.Add(track.Tag.Album, new List<TagLib.File> { track });
+                }
+                else
+                {
+                    albums[track.Tag.Album].Add(track);
+                }
+
+                mediaFixerStatus.ItemProcessed();
             }
 
-            if (!albums.ContainsKey(track.Tag.Album))
-            {
-                albums.Add(track.Tag.Album, new List<TagLib.File> { track });
-            }
-            else
-            {
-                albums[track.Tag.Album].Add(track);
-            }
-
-            mediaFixerStatus.ItemProcessed();
+            return albums;
         }
-
-        return albums;
     }
 }

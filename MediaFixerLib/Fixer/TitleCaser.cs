@@ -1,14 +1,15 @@
 ﻿using System.Globalization;
 
-namespace MediaFixerLib.Fixer;
-
-public static class TitleCaser
+namespace MediaFixerLib.Fixer
 {
-    private static readonly TextInfo TextInfoEnUs = new CultureInfo("en-US", false).TextInfo;
-
-    public static string ToTitleCase(this string s)
+    public static class TitleCaser
     {
-        // Convert to lower first because ToTitleCase ignores caps
-        return TextInfoEnUs.ToTitleCase(TextInfoEnUs.ToLower(s));
+        private static readonly TextInfo TextInfoEnUs = new CultureInfo("en-US", false).TextInfo;
+
+        public static string ToTitleCase(this string s)
+        {
+            // Convert to lower first because ToTitleCase ignores caps
+            return TextInfoEnUs.ToTitleCase(TextInfoEnUs.ToLower(s));
+        }
     }
 }

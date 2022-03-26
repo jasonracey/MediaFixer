@@ -1,17 +1,22 @@
-﻿namespace MediaFixerLib.Fixer;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
-public static class TrackCountFixer
+namespace MediaFixerLib.Fixer
 {
-    public static void FixTrackCounts(IEnumerable<TagLib.File> tracks)
+    public static class TrackCountFixer
     {
-        if (tracks == null) throw new ArgumentNullException(nameof(tracks));
-
-        var trackArray= tracks.ToArray();
-        var trackCount = (uint)trackArray.Length;
-
-        foreach (var track in trackArray)
+        public static void FixTrackCounts(IEnumerable<TagLib.File> tracks)
         {
-            track.Tag.TrackCount = trackCount;
+            if (tracks == null) throw new ArgumentNullException(nameof(tracks));
+
+            var trackArray= tracks.ToArray();
+            var trackCount = (uint)trackArray.Length;
+
+            foreach (var track in trackArray)
+            {
+                track.Tag.TrackCount = trackCount;
+            }
         }
     }
 }

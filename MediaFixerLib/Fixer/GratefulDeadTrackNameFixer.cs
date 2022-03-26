@@ -1,6 +1,8 @@
-﻿namespace MediaFixerLib.Fixer;
+﻿using System;
 
-public static class GratefulDeadTrackNameFixer
+namespace MediaFixerLib.Fixer
+{
+    public static class GratefulDeadTrackNameFixer
 {
     public static string FixTrackName(string trackName)
     {
@@ -75,4 +77,5 @@ public static class GratefulDeadTrackNameFixer
 
         return trackName;
     }
+}
 }

@@ -1,102 +1,106 @@
-﻿using MediaFixerLib.Workflow;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using MediaFixerLib.Workflow;
 
-namespace MediaFixerLib;
-
-public class MediaFixer
+namespace MediaFixerLib
 {
-    private readonly IWorkflowRunner _mergeAlbumsWorkflowRunner;
-    private readonly IWorkflowRunner _importTrackNamesWorkflowRunner;
-    private readonly IWorkflowRunner _albumWorkflowRunner;
-    private readonly IWorkflowRunner _trackWorkflowRunner;
-
-    private MediaFixerStatus _mediaFixerStatus;
-
-    public MediaFixer(
-        IWorkflowRunner mergeAlbumsWorkflowRunner,
-        IWorkflowRunner importTrackNamesWorkflowRunner,
-        IWorkflowRunner albumWorkflowRunner,
-        IWorkflowRunner trackWorkflowRunner)
+    public class MediaFixer
     {
-        _mergeAlbumsWorkflowRunner = mergeAlbumsWorkflowRunner ?? throw new ArgumentNullException(nameof(mergeAlbumsWorkflowRunner));
-        _importTrackNamesWorkflowRunner = importTrackNamesWorkflowRunner ?? throw new ArgumentNullException(nameof(importTrackNamesWorkflowRunner));
-        _albumWorkflowRunner = albumWorkflowRunner ?? throw new ArgumentNullException(nameof(albumWorkflowRunner));
-        _trackWorkflowRunner = trackWorkflowRunner ?? throw new ArgumentNullException(nameof(trackWorkflowRunner));
+        private readonly IWorkflowRunner _mergeAlbumsWorkflowRunner;
+        private readonly IWorkflowRunner _importTrackNamesWorkflowRunner;
+        private readonly IWorkflowRunner _albumWorkflowRunner;
+        private readonly IWorkflowRunner _trackWorkflowRunner;
 
-        _mediaFixerStatus = MediaFixerStatus.Create(default);
-    }
+        private MediaFixerStatus _mediaFixerStatus;
 
-    public string Message => _mediaFixerStatus.Message;
-
-    public int ItemsProcessed => _mediaFixerStatus.ItemsProcessed;
-
-    public int ItemsTotal => _mediaFixerStatus.ItemsTotal;
-
-    public void FixMedia(
-        IEnumerable<string> filePaths,
-        IEnumerable<Workflow.Workflow> workflows)
-    {
-        if (filePaths == null)
-            throw new ArgumentNullException(nameof(filePaths));
-        if (workflows == null)
-            throw new ArgumentNullException(nameof(workflows));
-        
-        var filePathsArray = filePaths.ToArray();
-        if (filePathsArray.Length == 0)
+        public MediaFixer(
+            IWorkflowRunner mergeAlbumsWorkflowRunner,
+            IWorkflowRunner importTrackNamesWorkflowRunner,
+            IWorkflowRunner albumWorkflowRunner,
+            IWorkflowRunner trackWorkflowRunner)
         {
-            return;
-        }
-        
-        var workflowArray = workflows.ToArray();
-        if (workflowArray.Length == 0)
-        {
-            return;
+            _mergeAlbumsWorkflowRunner = mergeAlbumsWorkflowRunner ?? throw new ArgumentNullException(nameof(mergeAlbumsWorkflowRunner));
+            _importTrackNamesWorkflowRunner = importTrackNamesWorkflowRunner ?? throw new ArgumentNullException(nameof(importTrackNamesWorkflowRunner));
+            _albumWorkflowRunner = albumWorkflowRunner ?? throw new ArgumentNullException(nameof(albumWorkflowRunner));
+            _trackWorkflowRunner = trackWorkflowRunner ?? throw new ArgumentNullException(nameof(trackWorkflowRunner));
+
+            _mediaFixerStatus = MediaFixerStatus.Create(default);
         }
 
-        _mediaFixerStatus = MediaFixerStatus.Create(filePathsArray.Length, MediaFixerStatus.LoadingSelectedFiles);
+        public string Message => _mediaFixerStatus.Message;
 
-        var filesToFix = new List<TagLib.File>();
+        public int ItemsProcessed => _mediaFixerStatus.ItemsProcessed;
 
-        foreach (var filePath in filePathsArray)
+        public int ItemsTotal => _mediaFixerStatus.ItemsTotal;
+
+        public void FixMedia(
+            IEnumerable<string> filePaths,
+            IEnumerable<Workflow.Workflow> workflows)
         {
-            filesToFix.Add(TagLib.File.Create(filePath));
-            _mediaFixerStatus.ItemProcessed();
-        }
+            if (filePaths == null)
+                throw new ArgumentNullException(nameof(filePaths));
+            if (workflows == null)
+                throw new ArgumentNullException(nameof(workflows));
+            
+            var filePathsArray = filePaths.ToArray();
+            if (filePathsArray.Length == 0)
+            {
+                return;
+            }
+            
+            var workflowArray = workflows.ToArray();
+            if (workflowArray.Length == 0)
+            {
+                return;
+            }
 
-        if (workflowArray.Any(workflow => workflow.Name == WorkflowName.MergeAlbums))
-        {
-            _mergeAlbumsWorkflowRunner.Run(new WorkflowRunnerInfo(filesToFix), ref _mediaFixerStatus);
-        }
+            _mediaFixerStatus = MediaFixerStatus.Create(filePathsArray.Length, MediaFixerStatus.LoadingSelectedFiles);
 
-        var inputFilePath = workflowArray
-            .FirstOrDefault(workflow => workflow.Name == WorkflowName.ImportTrackNames)?
-            .FileName;
+            var filesToFix = new List<TagLib.File>();
 
-        if (!string.IsNullOrWhiteSpace(inputFilePath))
-        {
-            _importTrackNamesWorkflowRunner.Run(new WorkflowRunnerInfo(filesToFix, inputFilePath: inputFilePath), ref _mediaFixerStatus);
-        }
+            foreach (var filePath in filePathsArray)
+            {
+                filesToFix.Add(TagLib.File.Create(filePath));
+                _mediaFixerStatus.ItemProcessed();
+            }
 
-        var albumWorkflows = workflowArray
-            .Where(workflow => workflow.Type == WorkflowType.Album)
-            .ToArray();
+            if (workflowArray.Any(workflow => workflow.Name == WorkflowName.MergeAlbums))
+            {
+                _mergeAlbumsWorkflowRunner.Run(new WorkflowRunnerInfo(filesToFix), ref _mediaFixerStatus);
+            }
 
-        if (albumWorkflows.Any())
-        {
-            _albumWorkflowRunner.Run(new WorkflowRunnerInfo(filesToFix, albumWorkflows), ref _mediaFixerStatus);
-        }
+            var inputFilePath = workflowArray
+                .FirstOrDefault(workflow => workflow.Name == WorkflowName.ImportTrackNames)?
+                .FileName;
 
-        var trackWorkflows = workflowArray
-            .Where(workflow => workflow.Type == WorkflowType.Track)
-            .ToArray();
+            if (!string.IsNullOrWhiteSpace(inputFilePath))
+            {
+                _importTrackNamesWorkflowRunner.Run(new WorkflowRunnerInfo(filesToFix, inputFilePath: inputFilePath), ref _mediaFixerStatus);
+            }
 
-        if (trackWorkflows.Any())
-        {
-            _trackWorkflowRunner.Run(new WorkflowRunnerInfo(filesToFix, trackWorkflows), ref _mediaFixerStatus);
-        }
+            var albumWorkflows = workflowArray
+                .Where(workflow => workflow.Type == WorkflowType.Album)
+                .ToArray();
 
-        foreach (var file in filesToFix)
-        {
-            file.Save();
+            if (albumWorkflows.Any())
+            {
+                _albumWorkflowRunner.Run(new WorkflowRunnerInfo(filesToFix, albumWorkflows), ref _mediaFixerStatus);
+            }
+
+            var trackWorkflows = workflowArray
+                .Where(workflow => workflow.Type == WorkflowType.Track)
+                .ToArray();
+
+            if (trackWorkflows.Any())
+            {
+                _trackWorkflowRunner.Run(new WorkflowRunnerInfo(filesToFix, trackWorkflows), ref _mediaFixerStatus);
+            }
+
+            foreach (var file in filesToFix)
+            {
+                file.Save();
+            }
         }
     }
 }

@@ -1,15 +1,16 @@
-﻿namespace MediaFixerLib.Fixer;
-
-public static class AlbumNameFixer
+﻿namespace MediaFixerLib.Fixer
 {
-    public static string FixAlbumName(this string albumName)
+    public static class AlbumNameFixer
     {
-        return albumName
-            .RemoveDiscNumber()
-            .Trim()
-            .RemoveDoubleSpaces()
-            .ToTitleCase()
-            .FixRomanNumerals()
-            .FixRegionAbbreviation();
+        public static string FixAlbumName(this string albumName)
+        {
+            return albumName
+                .RemoveDiscNumber()
+                .Trim()
+                .RemoveDoubleSpaces()
+                .ToTitleCase()
+                .FixRomanNumerals()
+                .FixRegionAbbreviation();
+        }
     }
 }

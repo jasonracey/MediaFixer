@@ -1,17 +1,21 @@
-﻿namespace MediaFixerLib.Workflow;
+﻿using System;
+using System.Collections.Generic;
 
-public class WorkflowRunnerInfo
+namespace MediaFixerLib.Workflow
 {
-    public WorkflowRunnerInfo(IList<TagLib.File> tracks, IEnumerable<Workflow>? workflows = null, string? inputFilePath = null)
+    public class WorkflowRunnerInfo
     {
-        Tracks = tracks ?? throw new ArgumentNullException(nameof(tracks));
-        Workflows = workflows;
-        InputFilePath = inputFilePath;
+        public WorkflowRunnerInfo(IList<TagLib.File> tracks, IEnumerable<Workflow>? workflows = null, string? inputFilePath = null)
+        {
+            Tracks = tracks ?? throw new ArgumentNullException(nameof(tracks));
+            Workflows = workflows;
+            InputFilePath = inputFilePath;
+        }
+
+        public IList<TagLib.File> Tracks { get; }
+
+        public IEnumerable<Workflow>? Workflows { get; }
+
+        public string? InputFilePath { get; }
     }
-
-    public IList<TagLib.File> Tracks { get; }
-
-    public IEnumerable<Workflow>? Workflows { get; }
-
-    public string? InputFilePath { get; }
 }

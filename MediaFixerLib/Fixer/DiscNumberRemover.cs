@@ -1,13 +1,14 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace MediaFixerLib.Fixer;
-
-public static class DiscNumberRemover
+namespace MediaFixerLib.Fixer
 {
-    private static readonly Regex DiscNumberRegex = new (@"\s*\[*\(*(disc|cd)\s*\d*\)*\]*\s*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-    public static string RemoveDiscNumber(this string s)
+    public static class DiscNumberRemover
     {
-        return DiscNumberRegex.Replace(s, string.Empty);
+        private static readonly Regex DiscNumberRegex = new Regex(@"\s*\[*\(*(disc|cd)\s*\d*\)*\]*\s*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        public static string RemoveDiscNumber(this string s)
+        {
+            return DiscNumberRegex.Replace(s, string.Empty);
+        }
     }
 }

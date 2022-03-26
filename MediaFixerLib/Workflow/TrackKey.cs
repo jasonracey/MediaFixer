@@ -1,9 +1,10 @@
-namespace MediaFixerLib.Workflow;
-
-public static class TrackKey
+namespace MediaFixerLib.Workflow
 {
-    public static string GetKey(this TagLib.File track)
+    public static class TrackKey
     {
-        return $"{track.Tag.Disc:D3}-{track.Tag.Disc:D3}";
+        public static string GetKey(this TagLib.File track)
+        {
+            return $"{track.Tag.Disc:D3}-{track.Tag.Disc:D3}";
+        }
     }
 }

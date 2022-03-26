@@ -1,50 +1,53 @@
-﻿namespace MediaFixerLib.Workflow;
+﻿using System;
 
-public class Workflow
+namespace MediaFixerLib.Workflow
 {
-    public string Name { get; }
-
-    public string? FileName { get; }
-
-    public string? NewValue { get; }
-
-    public string? OldValue { get; }
-
-    public WorkflowType? Type { get; }
-
-    private Workflow(
-        string name,
-        string? fileName = null,
-        string? oldValue = null,
-        string? newValue = null,
-        WorkflowType? type = WorkflowType.None)
+    public class Workflow
     {
-        if (string.IsNullOrWhiteSpace(name))
+        public string Name { get; }
+
+        public string? FileName { get; }
+
+        public string? NewValue { get; }
+
+        public string? OldValue { get; }
+
+        public WorkflowType? Type { get; }
+
+        private Workflow(
+            string name,
+            string? fileName = null,
+            string? oldValue = null,
+            string? newValue = null,
+            WorkflowType? type = WorkflowType.None)
         {
-            throw new ArgumentNullException(nameof(name));
-        }
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
             
-        Name = name;
-        FileName = fileName;
-        OldValue = oldValue;
-        NewValue = newValue;
-        Type = type;
-    }
+            Name = name;
+            FileName = fileName;
+            OldValue = oldValue;
+            NewValue = newValue;
+            Type = type;
+        }
 
-    public static Workflow Create(
-        string name, 
-        string? oldValue = null, 
-        string? newValue = null, 
-        string? fileName = null)
-    {
-        return name switch
+        public static Workflow Create(
+            string name, 
+            string? oldValue = null, 
+            string? newValue = null, 
+            string? fileName = null)
         {
-            WorkflowName.MergeAlbums => new Workflow(name),
-            WorkflowName.ImportTrackNames => new Workflow(name, fileName),
-            WorkflowName.FixCountOfTracksOnAlbum => new Workflow(name, type: WorkflowType.Album),
-            WorkflowName.FixTrackNumbers => new Workflow(name, type: WorkflowType.Album),
-            WorkflowName.FindAndReplace => new Workflow(name, oldValue: oldValue, newValue: newValue, type: WorkflowType.Track),
-            _ => new Workflow(name, type: WorkflowType.Track)
-        };
+            return name switch
+            {
+                WorkflowName.MergeAlbums => new Workflow(name),
+                WorkflowName.ImportTrackNames => new Workflow(name, fileName),
+                WorkflowName.FixCountOfTracksOnAlbum => new Workflow(name, type: WorkflowType.Album),
+                WorkflowName.FixTrackNumbers => new Workflow(name, type: WorkflowType.Album),
+                WorkflowName.FindAndReplace => new Workflow(name, oldValue: oldValue, newValue: newValue, type: WorkflowType.Track),
+                _ => new Workflow(name, type: WorkflowType.Track)
+            };
+        }
     }
 }

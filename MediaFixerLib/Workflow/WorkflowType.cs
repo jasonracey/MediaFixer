@@ -1,8 +1,9 @@
-﻿namespace MediaFixerLib.Workflow;
-
-public enum WorkflowType
+﻿namespace MediaFixerLib.Workflow
 {
-    None = 0,
-    Album,
-    Track
+    public enum WorkflowType
+    {
+        None = 0,
+        Album,
+        Track
+    }
 }
