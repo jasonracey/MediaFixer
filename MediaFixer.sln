@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaFixerLib", "MediaFixer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaFixerLib.SmokeTests", "MediaFixerLib.SmokeTests\MediaFixerLib.SmokeTests.csproj", "{C3C112C9-C15F-4DC8-B3C7-5B5F0CE088B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaFixerUI", "MediaFixerUI\MediaFixerUI.csproj", "{A27D2D47-AACE-47FC-96CB-583972D77254}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{C3C112C9-C15F-4DC8-B3C7-5B5F0CE088B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3C112C9-C15F-4DC8-B3C7-5B5F0CE088B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3C112C9-C15F-4DC8-B3C7-5B5F0CE088B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A27D2D47-AACE-47FC-96CB-583972D77254}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{A27D2D47-AACE-47FC-96CB-583972D77254}.Debug|Any CPU.Build.0 = Debug|x86
+		{A27D2D47-AACE-47FC-96CB-583972D77254}.Release|Any CPU.ActiveCfg = Release|x86
+		{A27D2D47-AACE-47FC-96CB-583972D77254}.Release|Any CPU.Build.0 = Release|x86
 	EndGlobalSection
 EndGlobal
