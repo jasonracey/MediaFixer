@@ -47,6 +47,10 @@
     <ItemGroup>
         <Reference Include="System" />
         <Reference Include="System.Core" />
+        <Reference Include="TagLibSharp, Version=2.2.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0">
+          <HintPath>..\packages\TagLibSharp.2.2.0\lib\netstandard2.0\TagLibSharp.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="Xamarin.Mac" />
     </ItemGroup>
     <ItemGroup>
@@ -69,6 +73,7 @@
     <ItemGroup>
         <None Include="Info.plist" />
         <None Include="Entitlements.plist" />
+        <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Main.cs" />
@@ -80,6 +85,12 @@
     </ItemGroup>
     <ItemGroup>
         <InterfaceDefinition Include="Main.storyboard" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\MediaFixerLib\MediaFixerLib.csproj">
+        <Project>{ffcbe2d0-2c44-4121-8e1b-d8fdd9988bff}</Project>
+        <Name>MediaFixerLib</Name>
+      </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 </Project>
