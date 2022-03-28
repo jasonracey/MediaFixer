@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using AppKit;
 using Foundation;
 using MediaFixerLib;
@@ -8,6 +11,27 @@ namespace MediaFixerUI
 {
     public partial class ViewController : NSViewController
     {
+        private const string DownloadsFolderName = "Downloads";
+        private const string FileSearchPattern = "*.mp3";
+        private const int OpenFileResult = 1;
+        private const double TimerIntervalSeconds = 0.25D;
+
+        private static readonly string DownloadsPath = Path.Combine(
+            Environment.SpecialFolder.UserProfile.ToString(), 
+            DownloadsFolderName);
+        
+        private static readonly  NSOpenPanel OpenPanel = new NSOpenPanel
+        {
+            AllowsMultipleSelection = false,
+            CanChooseDirectories = true,
+            CanChooseFiles = false,
+            CanCreateDirectories = false,
+            Directory = DownloadsPath,
+            ReleasedWhenClosed = false,
+            ShowsHiddenFiles = false,
+            ShowsResizeIndicator = true
+        };
+        
         private static readonly MediaFixer MediaFixer = new MediaFixer(
             new MergeAlbumsWorkflowRunner(),
             new ImportTrackNamesWorkflowRunner(),
@@ -28,101 +52,237 @@ namespace MediaFixerUI
             Status.StringValue = string.Empty;
 
             // select tracks box
-            TextDirectory.Changed += DirectoryChanged;
             ButtonClearDirectory.Activated += ClearDirectory;
             ButtonSelectDirectory.Activated += SelectDirectory;
             
             // edit tracks tab
-            RadioFixTracks.Activated += FixTracksToggled;
-            RadioMergeAlbums.Activated += MergeAlbumsToggled;
-            RadioSetAlbumNames.Activated += SetAlbumNamesToggled;
-            ButtonStartEdit.Activated += StartEdit;
+            RadioFixTracks.Activated += FixTracksClicked;
+            RadioMergeAlbums.Activated += MergeAlbumsClicked;
+            RadioSetAlbumNames.Activated += SetAlbumNamesClicked;
             
             // find and replace tab
             TextFind.Changed += FindChanged;
             ButtonClearFindReplace.Activated += ClearFindReplace;
-            ButtonStartFindReplace.Activated += StartFindReplace;
             
             // import track names tab
             ButtonSelectFile.Activated += SelectFile;
             ButtonClearImportTrackNames.Activated += ClearImport;
-            ButtonStartImportTrackNames.Activated += StartImport;
             
             SetIdleState();
         }
         
         #region Select Tracks Event Handlers
-        private void DirectoryChanged(object sender, EventArgs args)
-        {
-            throw new NotImplementedException();
-        }
-        
         private void ClearDirectory(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            // select tracks box
+            TextDirectory.StringValue = string.Empty;
+            ButtonClearDirectory.Enabled = false;
+
+            // find and replace tab
+            ButtonStartFindReplace.Enabled = false;
+            
+            // import track names tab
+            ButtonStartImportTrackNames.Enabled = false;
         }
-        
+
         private void SelectDirectory(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            var result = OpenPanel.RunModal();
+            if (result != OpenFileResult) return;
+            
+            // select tracks box
+            TextDirectory.StringValue = OpenPanel.Url.Path;
+            ButtonClearDirectory.Enabled = !string.IsNullOrWhiteSpace(TextDirectory.StringValue);
+            
+            // edit tab
+            ButtonStartEdit.Enabled = RadioFixTracks.State == 
+                NSCellStateValue.On || 
+                RadioMergeAlbums.State == NSCellStateValue.On || 
+                RadioSetAlbumNames.State == NSCellStateValue.On;
+
+            // find and replace tab
+            ButtonStartFindReplace.Enabled = !string.IsNullOrEmpty(TextFind.StringValue);
+            
+            // import track names tab
+            ButtonStartImportTrackNames.Enabled = !string.IsNullOrWhiteSpace(TextFile.StringValue);
         }
         #endregion
         
         #region Edit Tracks Event Handlers
-        private void FixTracksToggled(object sender, EventArgs e)
+        private void FixTracksClicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            RadioFixTracks.State = NSCellStateValue.On;
+            RadioMergeAlbums.State = NSCellStateValue.Off;
+            RadioSetAlbumNames.State = NSCellStateValue.Off;
         }
         
-        private void MergeAlbumsToggled(object sender, EventArgs e)
+        private void MergeAlbumsClicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            RadioFixTracks.State = NSCellStateValue.Off;
+            RadioMergeAlbums.State = NSCellStateValue.On;
+            RadioSetAlbumNames.State = NSCellStateValue.Off;
         }
         
-        private void SetAlbumNamesToggled(object sender, EventArgs e)
+        private void SetAlbumNamesClicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            RadioFixTracks.State = NSCellStateValue.Off;
+            RadioMergeAlbums.State = NSCellStateValue.Off;
+            RadioSetAlbumNames.State = NSCellStateValue.On;
         }
-        
-        private void StartEdit(object sender, EventArgs e)
+
+        async partial void StartEditClicked(NSButton sender)
         {
-            throw new NotImplementedException();
+            var workflows = GetEditWorkflows(
+                RadioFixTracks.State, 
+                CheckGratefulDead.State,
+                RadioMergeAlbums.State, 
+                RadioSetAlbumNames.State);
+
+            await RunWorkflows(workflows);
         }
         #endregion
-        
+
         #region Find And Replace Event Handlers
         private void FindChanged(object sender, EventArgs args)
         {
-            throw new NotImplementedException();
+            var haveText = !string.IsNullOrEmpty(TextFind.StringValue);
+            ButtonClearFindReplace.Enabled = haveText;
+            ButtonStartFindReplace.Enabled = HaveDirectory() && haveText;
         }
         
         private void ClearFindReplace(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            TextFind.StringValue = string.Empty;
+            TextReplace.StringValue = string.Empty;
+            ButtonClearFindReplace.Enabled = false;
+            ButtonStartFindReplace.Enabled = false;
         }
         
-        private void StartFindReplace(object sender, EventArgs e)
+        async partial void StartFindReplaceClicked(NSButton sender)
         {
-            throw new NotImplementedException();
+            var workflows = new[]
+            {
+                Workflow.Create(
+                    name: WorkflowName.FindAndReplace, 
+                    oldValue: TextFind.StringValue, 
+                    newValue: TextReplace.StringValue) 
+            };
+            
+            await RunWorkflows(workflows);
         }
         #endregion
         
         #region Import Track Names Event Handlers
-        private void SelectFile(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-        
         private void ClearImport(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            TextFile.StringValue = string.Empty;
+            ButtonClearImportTrackNames.Enabled = false;
+            ButtonStartImportTrackNames.Enabled = false;
         }
         
-        private void StartImport(object sender, EventArgs e)
+        private void SelectFile(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            var result = OpenPanel.RunModal();
+            if (result != OpenFileResult) return;
+            
+            TextFile.StringValue = OpenPanel.Url.Path;
+
+            var haveFilePath = !string.IsNullOrWhiteSpace(TextFile.StringValue);
+            ButtonClearImportTrackNames.Enabled = haveFilePath;
+            ButtonStartImportTrackNames.Enabled = HaveDirectory() && haveFilePath;
+        }
+
+        async partial void StartImportClicked(NSButton sender)
+        {
+            var workflows = new[]
+            {
+                Workflow.Create(
+                    WorkflowName.ImportTrackNames, 
+                    fileName: TextFile.StringValue)
+            };
+            
+            await RunWorkflows(workflows);
         }
         #endregion
+        
+        private static IEnumerable<Workflow> GetEditWorkflows(
+            NSCellStateValue fixTracksState,
+            NSCellStateValue fixGratefulDeadTracksState,
+            NSCellStateValue mergeAlbumsState,
+            NSCellStateValue setAlbumNamesState)
+        {
+            var workflows = new HashSet<Workflow>();
+
+            if (fixTracksState == NSCellStateValue.On)
+            {
+                workflows.Add(Workflow.Create(name: WorkflowName.FixCountOfTracksOnAlbum));
+                if (fixGratefulDeadTracksState == NSCellStateValue.On)
+                {
+                    workflows.Add(Workflow.Create(name: WorkflowName.FixGratefulDeadTracks));
+                }
+                workflows.Add(Workflow.Create(name: WorkflowName.FixTrackNames));
+                workflows.Add(Workflow.Create(name: WorkflowName.FixTrackNumbers));
+            }
+            else if (mergeAlbumsState == NSCellStateValue.On)
+            {
+                workflows.Add(Workflow.Create(name: WorkflowName.MergeAlbums));
+            }
+            else if (setAlbumNamesState == NSCellStateValue.On)
+            {
+                workflows.Add(Workflow.Create(name: WorkflowName.SetAlbumNames));
+            }
+            else
+            {
+                throw new InvalidOperationException("One radio button must be in the on state");
+            }
+
+            return workflows;
+        }
+        
+        private static IEnumerable<string> GetFilePaths(string directoryPath)
+        {
+            return Directory.GetFiles(
+                directoryPath.Trim(), 
+                FileSearchPattern, 
+                SearchOption.AllDirectories);
+        }
+        
+        private static double GetPercentCompleted(double completed, double total)
+        {
+            return total == 0.0D 
+                ? 0.0D 
+                : 100 * completed / total;
+        }
+        
+        private bool HaveDirectory()
+        {
+            return !string.IsNullOrWhiteSpace(TextDirectory.StringValue);
+        }
+        
+        private async Task RunWorkflows(IEnumerable<Workflow> workflows)
+        {
+            SetBusyState();
+            StartTimer();
+
+            try
+            {
+                var filePaths = GetFilePaths(TextDirectory.StringValue);
+
+                await Task.Run(() => MediaFixer.FixMedia(
+                    filePaths,
+                    workflows));
+                
+                SetIdleState();
+            }
+            catch (Exception ex)
+            {
+                SetErrorState($"Error: {ex.Message}");
+            }
+            finally
+            {
+                StopTimer();
+            }
+        }
 
         private void SetBusyState()
         {
@@ -157,9 +317,10 @@ namespace MediaFixerUI
             Status.TextColor = NSColor.White;
         }
         
-        private void SetErrorState()
+        private void SetErrorState(string message)
         {
-            throw new NotImplementedException();
+            Status.StringValue = message;
+            Status.TextColor = NSColor.Red;
         }
 
         private void SetIdleState()
@@ -182,7 +343,9 @@ namespace MediaFixerUI
             ButtonStartEdit.Enabled = false;
             
             // find and replace tab
+            TextFind.Editable = true;
             TextFind.StringValue = string.Empty;
+            TextReplace.Editable = true;
             TextReplace.StringValue = string.Empty;
             ButtonClearFindReplace.Enabled = false;
             ButtonStartFindReplace.Enabled = false;
@@ -199,6 +362,24 @@ namespace MediaFixerUI
             Progress.Hidden = true;
             Status.StringValue = string.Empty;
             Status.TextColor = NSColor.White;
+        }
+        
+        private void StartTimer()
+        {
+            StopTimer();
+            
+            _timer = NSTimer.CreateRepeatingScheduledTimer(TimerIntervalSeconds, _ => {
+                Progress.DoubleValue = GetPercentCompleted(MediaFixer.ItemsProcessed, MediaFixer.ItemsTotal);
+                Status.StringValue = MediaFixer.Message;
+            });
+        }
+
+        private void StopTimer()
+        {
+            if (_timer == null) return;
+            _timer.Invalidate();
+            _timer.Dispose();
+            _timer = null;
         }
     }
 }

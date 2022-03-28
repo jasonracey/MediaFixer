@@ -76,16 +76,30 @@ namespace MediaFixerUI
 		[Outlet]
 		AppKit.NSTextField TextReplace { get; set; }
 
+		[Action ("StartEditClicked:")]
+		partial void StartEditClicked (AppKit.NSButton sender);
+
+		[Action ("StartFindReplaceClicked:")]
+		partial void StartFindReplaceClicked (AppKit.NSButton sender);
+
+		[Action ("StartImportClicked:")]
+		partial void StartImportClicked (AppKit.NSButton sender);
+
 		void ReleaseDesignerOutlets ()
 		{
-			if (TextDirectory != null) {
-				TextDirectory.Dispose ();
-				TextDirectory = null;
-			}
-
 			if (ButtonClearDirectory != null) {
 				ButtonClearDirectory.Dispose ();
 				ButtonClearDirectory = null;
+			}
+
+			if (ButtonClearFindReplace != null) {
+				ButtonClearFindReplace.Dispose ();
+				ButtonClearFindReplace = null;
+			}
+
+			if (ButtonClearImportTrackNames != null) {
+				ButtonClearImportTrackNames.Dispose ();
+				ButtonClearImportTrackNames = null;
 			}
 
 			if (ButtonSelectDirectory != null) {
@@ -93,19 +107,39 @@ namespace MediaFixerUI
 				ButtonSelectDirectory = null;
 			}
 
-			if (TabEditTracks != null) {
-				TabEditTracks.Dispose ();
-				TabEditTracks = null;
+			if (ButtonSelectFile != null) {
+				ButtonSelectFile.Dispose ();
+				ButtonSelectFile = null;
 			}
 
-			if (RadioFixTracks != null) {
-				RadioFixTracks.Dispose ();
-				RadioFixTracks = null;
+			if (ButtonStartEdit != null) {
+				ButtonStartEdit.Dispose ();
+				ButtonStartEdit = null;
+			}
+
+			if (ButtonStartFindReplace != null) {
+				ButtonStartFindReplace.Dispose ();
+				ButtonStartFindReplace = null;
+			}
+
+			if (ButtonStartImportTrackNames != null) {
+				ButtonStartImportTrackNames.Dispose ();
+				ButtonStartImportTrackNames = null;
 			}
 
 			if (CheckGratefulDead != null) {
 				CheckGratefulDead.Dispose ();
 				CheckGratefulDead = null;
+			}
+
+			if (Progress != null) {
+				Progress.Dispose ();
+				Progress = null;
+			}
+
+			if (RadioFixTracks != null) {
+				RadioFixTracks.Dispose ();
+				RadioFixTracks = null;
 			}
 
 			if (RadioMergeAlbums != null) {
@@ -118,14 +152,34 @@ namespace MediaFixerUI
 				RadioSetAlbumNames = null;
 			}
 
-			if (ButtonStartEdit != null) {
-				ButtonStartEdit.Dispose ();
-				ButtonStartEdit = null;
+			if (Status != null) {
+				Status.Dispose ();
+				Status = null;
+			}
+
+			if (TabEditTracks != null) {
+				TabEditTracks.Dispose ();
+				TabEditTracks = null;
 			}
 
 			if (TabFindAndReplace != null) {
 				TabFindAndReplace.Dispose ();
 				TabFindAndReplace = null;
+			}
+
+			if (TabImportTrackNames != null) {
+				TabImportTrackNames.Dispose ();
+				TabImportTrackNames = null;
+			}
+
+			if (TextDirectory != null) {
+				TextDirectory.Dispose ();
+				TextDirectory = null;
+			}
+
+			if (TextFile != null) {
+				TextFile.Dispose ();
+				TextFile = null;
 			}
 
 			if (TextFind != null) {
@@ -136,51 +190,6 @@ namespace MediaFixerUI
 			if (TextReplace != null) {
 				TextReplace.Dispose ();
 				TextReplace = null;
-			}
-
-			if (ButtonClearFindReplace != null) {
-				ButtonClearFindReplace.Dispose ();
-				ButtonClearFindReplace = null;
-			}
-
-			if (ButtonStartFindReplace != null) {
-				ButtonStartFindReplace.Dispose ();
-				ButtonStartFindReplace = null;
-			}
-
-			if (TabImportTrackNames != null) {
-				TabImportTrackNames.Dispose ();
-				TabImportTrackNames = null;
-			}
-
-			if (TextFile != null) {
-				TextFile.Dispose ();
-				TextFile = null;
-			}
-
-			if (ButtonSelectFile != null) {
-				ButtonSelectFile.Dispose ();
-				ButtonSelectFile = null;
-			}
-
-			if (ButtonClearImportTrackNames != null) {
-				ButtonClearImportTrackNames.Dispose ();
-				ButtonClearImportTrackNames = null;
-			}
-
-			if (ButtonStartImportTrackNames != null) {
-				ButtonStartImportTrackNames.Dispose ();
-				ButtonStartImportTrackNames = null;
-			}
-
-			if (Progress != null) {
-				Progress.Dispose ();
-				Progress = null;
-			}
-
-			if (Status != null) {
-				Status.Dispose ();
-				Status = null;
 			}
 
 		}

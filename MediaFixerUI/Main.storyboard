@@ -793,7 +793,7 @@
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
                                                     <connections>
-                                                        <action selector="ButtonStartEditClicked:" target="XfG-lQ-9wD" id="gAE-o9-rpr"/>
+                                                        <action selector="StartEditClicked:" target="XfG-lQ-9wD" id="hEv-EG-h4l"/>
                                                     </connections>
                                                 </button>
                                             </subviews>
@@ -859,10 +859,10 @@
                                                     <buttonCell key="cell" type="push" title="Start" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="zZQ-Ef-Fr2">
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                         <font key="font" metaFont="system"/>
+                                                        <connections>
+                                                            <action selector="StartFindReplaceClicked:" target="XfG-lQ-9wD" id="SsX-rm-mNO"/>
+                                                        </connections>
                                                     </buttonCell>
-                                                    <connections>
-                                                        <action selector="ButtonStartFindReplaceClicked:" target="XfG-lQ-9wD" id="u3e-ac-6Ai"/>
-                                                    </connections>
                                                 </button>
                                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ghq-KH-nQ2">
                                                     <rect key="frame" x="251" y="10" width="73" height="32"/>
@@ -904,10 +904,10 @@
                                                     <buttonCell key="cell" type="push" title="Start" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="LZc-L1-Q4E">
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                         <font key="font" metaFont="system"/>
+                                                        <connections>
+                                                            <action selector="StartImportClicked:" target="XfG-lQ-9wD" id="x4d-29-TMI"/>
+                                                        </connections>
                                                     </buttonCell>
-                                                    <connections>
-                                                        <action selector="ButtonStartImportTrackNamesClicked:" target="XfG-lQ-9wD" id="f2G-Er-bGl"/>
-                                                    </connections>
                                                 </button>
                                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MDg-X6-AfT">
                                                     <rect key="frame" x="322" y="74" width="73" height="32"/>
