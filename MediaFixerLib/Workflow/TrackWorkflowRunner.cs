@@ -55,9 +55,8 @@ namespace MediaFixerLib.Workflow
                     if (string.IsNullOrWhiteSpace(track.Tag.Comment))
                     {
                         var directory = track.Name?
-                            .Split("/")?
-                            .FirstOrDefault();
-
+                            .Split("/")?[^2];
+                        
                         track.Tag.Comment = directory ?? string.Empty;
                     }
                     
