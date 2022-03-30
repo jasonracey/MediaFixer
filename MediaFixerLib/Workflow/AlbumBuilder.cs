@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MediaFixerLib.Workflow
 {
@@ -17,7 +18,11 @@ namespace MediaFixerLib.Workflow
             {
                 if (string.IsNullOrWhiteSpace(track.Tag.Album))
                 {
-                    throw new MediaFixerException(MediaFixerException.Reason.MissingAlbumName);
+                    var directory = track.Name?
+                        .Split("/")?
+                        .FirstOrDefault();
+
+                    track.Tag.Album = directory ?? throw new MediaFixerException(MediaFixerException.Reason.MissingAlbumName);
                 }
 
                 if (!albums.ContainsKey(track.Tag.Album))
