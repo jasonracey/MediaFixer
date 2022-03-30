@@ -9,7 +9,6 @@ namespace MediaFixerLib
         {
             public const string ImportCountMismatch = "The number of names to import must match the number of tracks selected";
             public const string MissingAlbumName = "One or more tracks is missing an album name";
-            public const string MissingTrackComment = "One or more Grateful Dead tracks is missing a comment";
             public const string MissingTrackNumber = "One or more tracks does not have a track number";
         }
 
