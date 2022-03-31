@@ -71,6 +71,9 @@ namespace MediaFixerUI
 		AppKit.NSTextField TextFile { get; set; }
 
 		[Outlet]
+		AppKit.NSTextField TextFiles { get; set; }
+
+		[Outlet]
 		AppKit.NSTextField TextFind { get; set; }
 
 		[Outlet]
@@ -180,6 +183,11 @@ namespace MediaFixerUI
 			if (TextFile != null) {
 				TextFile.Dispose ();
 				TextFile = null;
+			}
+
+			if (TextFiles != null) {
+				TextFiles.Dispose ();
+				TextFiles = null;
 			}
 
 			if (TextFind != null) {

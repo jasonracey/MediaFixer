@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using AppKit;
 using Foundation;
@@ -38,6 +39,7 @@ namespace MediaFixerUI
             new AlbumWorkflowRunner(),
             new TrackWorkflowRunner());
         
+        private IEnumerable<string> _files;
         private NSTimer _timer;
         
         public ViewController(IntPtr handle) : base(handle)
@@ -74,9 +76,13 @@ namespace MediaFixerUI
         #region Select Tracks Event Handlers
         private void ClearDirectory(object sender, EventArgs e)
         {
+            // state
+            _files = Enumerable.Empty<string>();
+
             // select tracks box
             TextDirectory.StringValue = string.Empty;
             ButtonClearDirectory.Enabled = false;
+            TextFiles.StringValue = string.Empty;
 
             // find and replace tab
             ButtonStartFindReplace.Enabled = false;
@@ -89,10 +95,16 @@ namespace MediaFixerUI
         {
             var result = OpenPanel.RunModal();
             if (result != OpenFileResult) return;
+
+            var path = OpenPanel.Url.Path;
+
+            // state
+            _files = GetFilePaths(path);
             
             // select tracks box
-            TextDirectory.StringValue = OpenPanel.Url.Path;
+            TextDirectory.StringValue = path;
             ButtonClearDirectory.Enabled = !string.IsNullOrWhiteSpace(TextDirectory.StringValue);
+            TextFiles.StringValue = string.Join(Environment.NewLine, _files);
             
             // edit tab
             ButtonStartEdit.Enabled = RadioFixTracks.State == 
@@ -266,10 +278,8 @@ namespace MediaFixerUI
 
             try
             {
-                var filePaths = GetFilePaths(TextDirectory.StringValue);
-
                 await Task.Run(() => MediaFixer.FixMedia(
-                    filePaths,
+                    _files,
                     workflows));
                 
                 SetIdleState();
@@ -305,7 +315,6 @@ namespace MediaFixerUI
             ButtonStartFindReplace.Enabled = false;
             
             // import track names tab
-            TextFile.Editable = false;
             ButtonClearImportTrackNames.Enabled = false;
             ButtonStartImportTrackNames.Enabled = false;
             ButtonSelectFile.Enabled = false;
@@ -330,6 +339,8 @@ namespace MediaFixerUI
             TextDirectory.StringValue = string.Empty;
             ButtonClearDirectory.Enabled = false;
             ButtonSelectDirectory.Enabled = true;
+            TextFiles.Editable = false;
+            TextFiles.StringValue = string.Empty;
             
             // edit tracks tab
             RadioFixTracks.Enabled = true;
