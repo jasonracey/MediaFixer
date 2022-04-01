@@ -21,11 +21,23 @@ namespace MediaFixerUI
             Environment.SpecialFolder.UserProfile.ToString(), 
             DownloadsFolderName);
         
-        private static readonly  NSOpenPanel OpenPanel = new NSOpenPanel
+        private static readonly  NSOpenPanel DirectoryOpenPanel = new NSOpenPanel
         {
             AllowsMultipleSelection = false,
             CanChooseDirectories = true,
             CanChooseFiles = false,
+            CanCreateDirectories = false,
+            Directory = DownloadsPath,
+            ReleasedWhenClosed = false,
+            ShowsHiddenFiles = false,
+            ShowsResizeIndicator = true
+        };
+        
+        private static readonly  NSOpenPanel FileOpenPanel = new NSOpenPanel
+        {
+            AllowsMultipleSelection = false,
+            CanChooseDirectories = false,
+            CanChooseFiles = true,
             CanCreateDirectories = false,
             Directory = DownloadsPath,
             ReleasedWhenClosed = false,
@@ -93,10 +105,10 @@ namespace MediaFixerUI
 
         private void SelectDirectory(object sender, EventArgs e)
         {
-            var result = OpenPanel.RunModal();
+            var result = DirectoryOpenPanel.RunModal();
             if (result != OpenFileResult) return;
 
-            var path = OpenPanel.Url.Path;
+            var path = DirectoryOpenPanel.Url.Path;
 
             // state
             _files = GetFilePaths(path);
@@ -194,10 +206,10 @@ namespace MediaFixerUI
         
         private void SelectFile(object sender, EventArgs e)
         {
-            var result = OpenPanel.RunModal();
+            var result = FileOpenPanel.RunModal();
             if (result != OpenFileResult) return;
             
-            TextFile.StringValue = OpenPanel.Url.Path;
+            TextFile.StringValue = FileOpenPanel.Url.Path;
 
             var haveFilePath = !string.IsNullOrWhiteSpace(TextFile.StringValue);
             ButtonClearImportTrackNames.Enabled = haveFilePath;
