@@ -43,8 +43,10 @@ namespace MediaFixerLib
             if (workflows == null)
                 throw new ArgumentNullException(nameof(workflows));
             
-            var filePathsArray = filePaths.ToArray();
-            if (filePathsArray.Length == 0)
+            var orderedFilePathsArray = filePaths
+                .OrderBy(path => path)
+                .ToArray();
+            if (orderedFilePathsArray.Length == 0)
             {
                 return;
             }
@@ -55,11 +57,11 @@ namespace MediaFixerLib
                 return;
             }
 
-            _mediaFixerStatus = MediaFixerStatus.Create(filePathsArray.Length, MediaFixerStatus.LoadingSelectedFiles);
+            _mediaFixerStatus = MediaFixerStatus.Create(orderedFilePathsArray.Length, MediaFixerStatus.LoadingSelectedFiles);
 
             var filesToFix = new List<TagLib.File>();
 
-            foreach (var filePath in filePathsArray)
+            foreach (var filePath in orderedFilePathsArray)
             {
                 filesToFix.Add(TagLib.File.Create(filePath));
                 _mediaFixerStatus.ItemProcessed();

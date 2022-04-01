@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace MediaFixerLib.Workflow
 {
@@ -12,12 +11,6 @@ namespace MediaFixerLib.Workflow
             if (workflowRunnerInfo == null) throw new ArgumentNullException(nameof(workflowRunnerInfo));
             if (workflowRunnerInfo.Tracks == null) throw new ArgumentException($"{nameof(workflowRunnerInfo.Tracks)} must not be null");
             if (string.IsNullOrWhiteSpace(workflowRunnerInfo.InputFilePath)) throw new ArgumentException($"{nameof(workflowRunnerInfo.InputFilePath)} must not be null");
-
-            // Prevent assigning wrong names.
-            if (workflowRunnerInfo.Tracks.Any(track => track.Tag.Track == 0))
-            {
-                throw new MediaFixerException(MediaFixerException.Reason.MissingTrackNumber);
-            }
 
             mediaFixerStatus = MediaFixerStatus.Create(workflowRunnerInfo.Tracks.Count, MediaFixerStatus.ReadingTrackNames);
 
