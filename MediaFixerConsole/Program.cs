@@ -42,7 +42,7 @@ namespace MediaFixerConsole
                 {
                     Console.WriteLine("Directory not found.");
                 }
-                else if (!TryGetFiles(options.Directory, out var filePaths))
+                else if (!TryGetFiles(options.Directory, out var files))
                 {
                     Console.WriteLine("Directory contains no files.");
                 }
@@ -67,17 +67,23 @@ namespace MediaFixerConsole
                     if (options.SetAlbumNames)
                         workflows.Add(Workflow.Create(name: WorkflowName.SetAlbumNames));
 
-                    mediaFixer.FixMedia(filePaths, workflows);
+                    mediaFixer.FixMedia(files, workflows);
                 }
             }
-
-            bool TryGetFiles(string? path, out string[] filePaths)
+            
+            bool TryGetFiles(string? directoryPath, out IEnumerable<TagLib.File> files)
             {
-                if (string.IsNullOrWhiteSpace(path))
-                    throw new ArgumentNullException(nameof(path));
+                if (string.IsNullOrWhiteSpace(directoryPath))
+                    throw new ArgumentNullException(nameof(directoryPath));
                 
-                filePaths = Directory.GetFiles(path, "*.mp3", SearchOption.AllDirectories);
-                return filePaths.Any();
+                var filePaths = Directory.GetFiles(
+                    directoryPath.Trim(), 
+                    ".mp3", 
+                    SearchOption.AllDirectories);
+
+                files = filePaths.Select(TagLib.File.Create);
+
+                return files.Any();
             }
         }
     }

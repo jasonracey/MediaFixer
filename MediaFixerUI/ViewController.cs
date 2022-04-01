@@ -7,6 +7,8 @@ using AppKit;
 using Foundation;
 using MediaFixerLib;
 using MediaFixerLib.Workflow;
+using MediaFixerUI.Data;
+using MediaFixerUI.Utilities;
 
 namespace MediaFixerUI
 {
@@ -20,30 +22,14 @@ namespace MediaFixerUI
         private static readonly string DownloadsPath = Path.Combine(
             Environment.SpecialFolder.UserProfile.ToString(), 
             DownloadsFolderName);
+
+        private static readonly NSOpenPanel DirectoryOpenPanel = OpenPanelBuilder.Build(
+            OpenPanelType.Directory, 
+            DownloadsPath);
         
-        private static readonly  NSOpenPanel DirectoryOpenPanel = new NSOpenPanel
-        {
-            AllowsMultipleSelection = false,
-            CanChooseDirectories = true,
-            CanChooseFiles = false,
-            CanCreateDirectories = false,
-            Directory = DownloadsPath,
-            ReleasedWhenClosed = false,
-            ShowsHiddenFiles = false,
-            ShowsResizeIndicator = true
-        };
-        
-        private static readonly  NSOpenPanel FileOpenPanel = new NSOpenPanel
-        {
-            AllowsMultipleSelection = false,
-            CanChooseDirectories = false,
-            CanChooseFiles = true,
-            CanCreateDirectories = false,
-            Directory = DownloadsPath,
-            ReleasedWhenClosed = false,
-            ShowsHiddenFiles = false,
-            ShowsResizeIndicator = true
-        };
+        private static readonly NSOpenPanel FileOpenPanel = OpenPanelBuilder.Build(
+            OpenPanelType.File, 
+            DownloadsPath);
         
         private static readonly MediaFixer MediaFixer = new MediaFixer(
             new MergeAlbumsWorkflowRunner(),
@@ -51,9 +37,10 @@ namespace MediaFixerUI
             new AlbumWorkflowRunner(),
             new TrackWorkflowRunner());
         
-        private IEnumerable<string> _files;
+        private IEnumerable<TagLib.File> _files;
+        private string _filesPath;
         private NSTimer _timer;
-        
+
         public ViewController(IntPtr handle) : base(handle)
         {
         }
@@ -89,12 +76,12 @@ namespace MediaFixerUI
         private void ClearDirectory(object sender, EventArgs e)
         {
             // state
-            _files = Enumerable.Empty<string>();
+            _files = Enumerable.Empty<TagLib.File>();
 
             // select tracks box
             TextDirectory.StringValue = string.Empty;
             ButtonClearDirectory.Enabled = false;
-            TextFiles.StringValue = string.Empty;
+            TableTracks.DataSource = new TrackTableDataSource();
 
             // find and replace tab
             ButtonStartFindReplace.Enabled = false;
@@ -108,15 +95,12 @@ namespace MediaFixerUI
             var result = DirectoryOpenPanel.RunModal();
             if (result != OpenFileResult) return;
 
-            var path = DirectoryOpenPanel.Url.Path;
+            _filesPath = DirectoryOpenPanel.Url.Path;
 
-            // state
-            _files = GetFilePaths(path);
-            
             // select tracks box
-            TextDirectory.StringValue = path;
+            TextDirectory.StringValue = _filesPath;
             ButtonClearDirectory.Enabled = !string.IsNullOrWhiteSpace(TextDirectory.StringValue);
-            TextFiles.StringValue = string.Join(Environment.NewLine, _files);
+            LoadTableTracks(_filesPath);
             
             // edit tab
             ButtonStartEdit.Enabled = RadioFixTracks.State == 
@@ -129,6 +113,18 @@ namespace MediaFixerUI
             
             // import track names tab
             ButtonStartImportTrackNames.Enabled = !string.IsNullOrWhiteSpace(TextFile.StringValue);
+        }
+
+        private void LoadTableTracks(string path)
+        {
+            _files = GetFiles(path);
+            var dataSource = new TrackTableDataSource();
+            foreach (var file in _files)
+            {
+                dataSource.Tracks.Add(new Track(file));
+            }
+            TableTracks.DataSource = dataSource;
+            TableTracks.Delegate = new TrackTableDelegate(dataSource);
         }
         #endregion
         
@@ -262,13 +258,17 @@ namespace MediaFixerUI
 
             return workflows;
         }
-        
-        private static IEnumerable<string> GetFilePaths(string directoryPath)
+
+        private static IEnumerable<TagLib.File> GetFiles(string directoryPath)
         {
-            return Directory.GetFiles(
+            var filePaths = Directory.GetFiles(
                 directoryPath.Trim(), 
                 FileSearchPattern, 
                 SearchOption.AllDirectories);
+
+            return filePaths
+                .Select(TagLib.File.Create)
+                .OrderBy(file => file.Name);
         }
         
         private static double GetPercentCompleted(double completed, double total)
@@ -283,6 +283,11 @@ namespace MediaFixerUI
             return !string.IsNullOrWhiteSpace(TextDirectory.StringValue);
         }
         
+        private bool HaveFiles()
+        {
+            return (_files?.Count() ?? 0) > 0;
+        }
+        
         private async Task RunWorkflows(IEnumerable<Workflow> workflows)
         {
             SetBusyState();
@@ -293,7 +298,7 @@ namespace MediaFixerUI
                 await Task.Run(() => MediaFixer.FixMedia(
                     _files,
                     workflows));
-                
+                LoadTableTracks(_filesPath);
                 SetIdleState();
             }
             catch (Exception ex)
@@ -348,11 +353,8 @@ namespace MediaFixerUI
         {
             // select tracks box
             TextDirectory.Editable = false;
-            TextDirectory.StringValue = string.Empty;
-            ButtonClearDirectory.Enabled = false;
+            ButtonClearDirectory.Enabled = HaveDirectory();
             ButtonSelectDirectory.Enabled = true;
-            TextFiles.Editable = false;
-            TextFiles.StringValue = string.Empty;
             
             // edit tracks tab
             RadioFixTracks.Enabled = true;
@@ -363,7 +365,7 @@ namespace MediaFixerUI
             RadioMergeAlbums.State = NSCellStateValue.Off;
             RadioSetAlbumNames.Enabled = true;
             RadioSetAlbumNames.State = NSCellStateValue.Off;
-            ButtonStartEdit.Enabled = false;
+            ButtonStartEdit.Enabled = HaveFiles();
             
             // find and replace tab
             TextFind.Editable = true;

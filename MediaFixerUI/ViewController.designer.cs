@@ -41,6 +41,18 @@ namespace MediaFixerUI
 		AppKit.NSButton CheckGratefulDead { get; set; }
 
 		[Outlet]
+		AppKit.NSTableColumn ColumnAlbum { get; set; }
+
+		[Outlet]
+		AppKit.NSTableColumn ColumnDiscNumber { get; set; }
+
+		[Outlet]
+		AppKit.NSTableColumn ColumnTitle { get; set; }
+
+		[Outlet]
+		AppKit.NSTableColumn ColumnTrackNumber { get; set; }
+
+		[Outlet]
 		AppKit.NSProgressIndicator Progress { get; set; }
 
 		[Outlet]
@@ -65,13 +77,13 @@ namespace MediaFixerUI
 		AppKit.NSTabViewItem TabImportTrackNames { get; set; }
 
 		[Outlet]
+		AppKit.NSTableView TableTracks { get; set; }
+
+		[Outlet]
 		AppKit.NSTextField TextDirectory { get; set; }
 
 		[Outlet]
 		AppKit.NSTextField TextFile { get; set; }
-
-		[Outlet]
-		AppKit.NSTextField TextFiles { get; set; }
 
 		[Outlet]
 		AppKit.NSTextField TextFind { get; set; }
@@ -185,11 +197,6 @@ namespace MediaFixerUI
 				TextFile = null;
 			}
 
-			if (TextFiles != null) {
-				TextFiles.Dispose ();
-				TextFiles = null;
-			}
-
 			if (TextFind != null) {
 				TextFind.Dispose ();
 				TextFind = null;
@@ -198,6 +205,31 @@ namespace MediaFixerUI
 			if (TextReplace != null) {
 				TextReplace.Dispose ();
 				TextReplace = null;
+			}
+
+			if (TableTracks != null) {
+				TableTracks.Dispose ();
+				TableTracks = null;
+			}
+
+			if (ColumnTrackNumber != null) {
+				ColumnTrackNumber.Dispose ();
+				ColumnTrackNumber = null;
+			}
+
+			if (ColumnTitle != null) {
+				ColumnTitle.Dispose ();
+				ColumnTitle = null;
+			}
+
+			if (ColumnAlbum != null) {
+				ColumnAlbum.Dispose ();
+				ColumnAlbum = null;
+			}
+
+			if (ColumnDiscNumber != null) {
+				ColumnDiscNumber.Dispose ();
+				ColumnDiscNumber = null;
 			}
 
 		}

@@ -35,18 +35,18 @@ namespace MediaFixerLib
         public int ItemsTotal => _mediaFixerStatus.ItemsTotal;
 
         public void FixMedia(
-            IEnumerable<string> filePaths,
+            IEnumerable<TagLib.File> files,
             IEnumerable<Workflow.Workflow> workflows)
         {
-            if (filePaths == null)
-                throw new ArgumentNullException(nameof(filePaths));
+            if (files == null)
+                throw new ArgumentNullException(nameof(files));
             if (workflows == null)
                 throw new ArgumentNullException(nameof(workflows));
             
-            var orderedFilePathsArray = filePaths
-                .OrderBy(path => path)
+            var orderedFileArray = files
+                .OrderBy(file => file.Name)
                 .ToArray();
-            if (orderedFilePathsArray.Length == 0)
+            if (orderedFileArray.Length == 0)
             {
                 return;
             }
@@ -57,19 +57,11 @@ namespace MediaFixerLib
                 return;
             }
 
-            _mediaFixerStatus = MediaFixerStatus.Create(orderedFilePathsArray.Length, MediaFixerStatus.LoadingSelectedFiles);
-
-            var filesToFix = new List<TagLib.File>();
-
-            foreach (var filePath in orderedFilePathsArray)
-            {
-                filesToFix.Add(TagLib.File.Create(filePath));
-                _mediaFixerStatus.ItemProcessed();
-            }
+            _mediaFixerStatus = MediaFixerStatus.Create(orderedFileArray.Length, MediaFixerStatus.LoadingSelectedFiles);
 
             if (workflowArray.Any(workflow => workflow.Name == WorkflowName.MergeAlbums))
             {
-                _mergeAlbumsWorkflowRunner.Run(new WorkflowRunnerInfo(filesToFix), ref _mediaFixerStatus);
+                _mergeAlbumsWorkflowRunner.Run(new WorkflowRunnerInfo(orderedFileArray), ref _mediaFixerStatus);
             }
 
             var inputFilePath = workflowArray
@@ -78,7 +70,7 @@ namespace MediaFixerLib
 
             if (!string.IsNullOrWhiteSpace(inputFilePath))
             {
-                _importTrackNamesWorkflowRunner.Run(new WorkflowRunnerInfo(filesToFix, inputFilePath: inputFilePath), ref _mediaFixerStatus);
+                _importTrackNamesWorkflowRunner.Run(new WorkflowRunnerInfo(orderedFileArray, inputFilePath: inputFilePath), ref _mediaFixerStatus);
             }
 
             var albumWorkflows = workflowArray
@@ -87,7 +79,7 @@ namespace MediaFixerLib
 
             if (albumWorkflows.Any())
             {
-                _albumWorkflowRunner.Run(new WorkflowRunnerInfo(filesToFix, albumWorkflows), ref _mediaFixerStatus);
+                _albumWorkflowRunner.Run(new WorkflowRunnerInfo(orderedFileArray, albumWorkflows), ref _mediaFixerStatus);
             }
 
             var trackWorkflows = workflowArray
@@ -96,10 +88,10 @@ namespace MediaFixerLib
 
             if (trackWorkflows.Any())
             {
-                _trackWorkflowRunner.Run(new WorkflowRunnerInfo(filesToFix, trackWorkflows), ref _mediaFixerStatus);
+                _trackWorkflowRunner.Run(new WorkflowRunnerInfo(orderedFileArray, trackWorkflows), ref _mediaFixerStatus);
             }
 
-            foreach (var file in filesToFix)
+            foreach (var file in orderedFileArray)
             {
                 file.Save();
             }

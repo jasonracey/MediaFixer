@@ -77,8 +77,13 @@
         <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Data\Track.cs" />
+        <Compile Include="Data\TrackTableDataSource.cs" />
+        <Compile Include="Data\TrackTableDelegate.cs" />
         <Compile Include="Main.cs" />
         <Compile Include="AppDelegate.cs" />
+        <Compile Include="Utilities\OpenPanelBuilder.cs" />
+        <Compile Include="Utilities\OpenPanelType.cs" />
         <Compile Include="ViewController.cs" />
         <Compile Include="ViewController.designer.cs">
             <DependentUpon>ViewController.cs</DependentUpon>

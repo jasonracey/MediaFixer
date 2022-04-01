@@ -18,13 +18,23 @@ namespace MediaFixerLib.SmokeTests
             (3, "Stealin'")
         };
         
-        private readonly string[] _filePaths = Directory.GetFiles(Path, SearchPattern, SearchOption.AllDirectories);
+        private readonly IEnumerable<TagLib.File> _files = GetFiles(Path);
 
         private readonly MediaFixer _mediaFixer = new(
             new MergeAlbumsWorkflowRunner(),
             new ImportTrackNamesWorkflowRunner(),
             new AlbumWorkflowRunner(),
             new TrackWorkflowRunner());
+        
+        private static IEnumerable<TagLib.File> GetFiles(string directoryPath)
+        {
+            var filePaths = Directory.GetFiles(
+                directoryPath.Trim(), 
+                SearchPattern, 
+                SearchOption.AllDirectories);
+
+            return filePaths.Select(TagLib.File.Create);
+        }
         
         [Test]
         public void CanFixTracks()
@@ -39,12 +49,11 @@ namespace MediaFixerLib.SmokeTests
             };
             
             // act
-            _mediaFixer.FixMedia(_filePaths, workflows);
+            _mediaFixer.FixMedia(_files, workflows);
             
             // assert
-            foreach (var filePath in _filePaths)
+            foreach (var file in _files)
             {
-                var file = TagLib.File.Create(filePath);
                 Assert.IsNotNull(file);
                 Assert.IsNotNull(file.Tag);
                 Assert.IsTrue(_tracks.Contains((file.Tag.Track, file.Tag.Title)));
@@ -62,12 +71,11 @@ namespace MediaFixerLib.SmokeTests
             };
             
             // act
-            _mediaFixer.FixMedia(_filePaths, workflows);
+            _mediaFixer.FixMedia(_files, workflows);
             
             // assert
-            foreach (var filePath in _filePaths)
+            foreach (var file in _files)
             {
-                var file = TagLib.File.Create(filePath);
                 Assert.IsNotNull(file);
                 Assert.IsNotNull(file.Tag);
                 Assert.IsTrue(_tracks.Contains((file.Tag.Track, file.Tag.Title)));
@@ -85,12 +93,11 @@ namespace MediaFixerLib.SmokeTests
             };
             
             // act
-            _mediaFixer.FixMedia(_filePaths, workflows);
+            _mediaFixer.FixMedia(_files, workflows);
             
             // assert
-            foreach (var filePath in _filePaths)
+            foreach (var file in _files)
             {
-                var file = TagLib.File.Create(filePath);
                 Assert.IsNotNull(file);
                 Assert.IsNotNull(file.Tag);
                 Assert.IsTrue(_tracks.Contains((file.Tag.Track, file.Tag.Title)));
@@ -108,12 +115,11 @@ namespace MediaFixerLib.SmokeTests
             };
             
             // act
-            _mediaFixer.FixMedia(_filePaths, workflows);
+            _mediaFixer.FixMedia(_files, workflows);
             
             // assert
-            foreach (var filePath in _filePaths)
+            foreach (var file in _files)
             {
-                var file = TagLib.File.Create(filePath);
                 Assert.IsNotNull(file);
                 Assert.IsNotNull(file.Tag);
                 Assert.IsTrue(_tracks.Contains((file.Tag.Track, file.Tag.Title)));
@@ -126,24 +132,22 @@ namespace MediaFixerLib.SmokeTests
         {
             // arrange
             const string path = "/Users/jasonracey/Music/iTunes/iTunes Media/Music/Juan Atkins/2020-09-25 Movement Selects Vol.1";
-            const string searchPattern = "*.mp3";
             (uint Number, string Name)[] tracks = 
             {
                 (1, "2020-09-25 Movement Selects Vol.1")
             };
-            var filePaths = Directory.GetFiles(path, searchPattern, SearchOption.AllDirectories);
+            var files = GetFiles(path).ToArray();
             var workflows = new List<Workflow.Workflow>
             {
                 Workflow.Workflow.Create(WorkflowName.SetAlbumNames)
             };
             
             // act
-            _mediaFixer.FixMedia(filePaths, workflows);
+            _mediaFixer.FixMedia(files, workflows);
             
             // assert
-            foreach (var filePath in filePaths)
+            foreach (var file in files)
             {
-                var file = TagLib.File.Create(filePath);
                 Assert.IsNotNull(file);
                 Assert.IsNotNull(file.Tag);
                 Assert.IsTrue(tracks.Contains((file.Tag.Track, file.Tag.Title)));
