@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace MediaFixerLib.Fixer
 {
-    public class TrackNameFixer
+    public static class TrackNameFixer
     {
         private static readonly IEnumerable<string> Labels = new HashSet<string> { "track" };
 

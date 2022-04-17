@@ -18,49 +18,52 @@ namespace MediaFixerLib.Workflow
             {
                 if (workflowRunnerInfo.Workflows.Any(workflow => workflow.Name == WorkflowName.SetAlbumNames))
                 {
-                    if (string.IsNullOrWhiteSpace(track.Tag.Album))
+                    if (string.IsNullOrWhiteSpace(track.AlbumName))
                     {
-                        track.Tag.Album = track.Tag.Title;
+                        track.AlbumName = track.TrackName;
                     }
                 }
 
                 if (workflowRunnerInfo.Workflows.Any(workflow => workflow.Name == WorkflowName.FindAndReplace))
                 {
                     var findAndReplace = workflowRunnerInfo.Workflows.First(item => item.Name == WorkflowName.FindAndReplace);
-                    if (!string.IsNullOrEmpty(findAndReplace.OldValue))
+                    if (!string.IsNullOrEmpty(findAndReplace.OldValue) && !string.IsNullOrWhiteSpace(track.TrackName))
                     {
-                        track.Tag.Title = track.Tag.Title.Replace(findAndReplace.OldValue, findAndReplace.NewValue);
+                        track.TrackName = track.TrackName.Replace(findAndReplace.OldValue, findAndReplace.NewValue);
                     }
                 }
 
                 if (workflowRunnerInfo.Workflows.Any(workflow => workflow.Name == WorkflowName.FixTrackNames))
                 {
-                    if (string.IsNullOrWhiteSpace(track.Tag.Title))
+                    if (string.IsNullOrWhiteSpace(track.TrackName))
                     {
-                        var title = track.Name?
+                        var title = track.FileName
                             .Split("/")?
                             .Last()?
                             .Replace(".mp3", string.Empty);
                         
-                        track.Tag.Title = title ?? string.Empty;
+                        track.TrackName = title ?? string.Empty;
                     }
                     
-                    track.Tag.Title = TrackNameFixer.FixTrackName(track.Tag.Title);
+                    track.TrackName = TrackNameFixer.FixTrackName(track.TrackName);
                 }
 
                 if (workflowRunnerInfo.Workflows.Any(workflow => workflow.Name == WorkflowName.FixGratefulDeadTracks))
                 {
-                    track.Tag.Title = GratefulDeadTrackNameFixer.FixTrackName(track.Tag.Title);
-                    
-                    if (string.IsNullOrWhiteSpace(track.Tag.Comment))
+                    if (!string.IsNullOrWhiteSpace(track.TrackName))
                     {
-                        var directory = track.Name?
-                            .Split("/")?[^2];
-                        
-                        track.Tag.Comment = directory ?? string.Empty;
+                        track.TrackName = GratefulDeadTrackNameFixer.FixTrackName(track.TrackName);
                     }
                     
-                    track.Tag.Comment = track.Tag.Comment.Replace("https://archive.org/details/", string.Empty);
+                    if (string.IsNullOrWhiteSpace(track.Comment))
+                    {
+                        var directory = track.FileName
+                            .Split("/")?[^2];
+                        
+                        track.Comment = directory ?? string.Empty;
+                    }
+                    
+                    track.Comment = track.Comment.Replace("https://archive.org/details/", string.Empty);
                 }
 
                 mediaFixerStatus.ItemProcessed();

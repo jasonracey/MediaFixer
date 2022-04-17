@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MediaFixerLib.Data;
 
 namespace MediaFixerLib.Fixer
 {
     public static class TrackCountFixer
     {
-        public static void FixTrackCounts(IEnumerable<TagLib.File> tracks)
+        public static void FixTrackCounts(IEnumerable<ITrack> tracks)
         {
             if (tracks == null) throw new ArgumentNullException(nameof(tracks));
 
             var trackArray= tracks.ToArray();
-            var trackCount = (uint)trackArray.Length;
 
             foreach (var track in trackArray)
             {
-                track.Tag.TrackCount = trackCount;
+                track.TrackCount = trackArray.Length;
             }
         }
     }

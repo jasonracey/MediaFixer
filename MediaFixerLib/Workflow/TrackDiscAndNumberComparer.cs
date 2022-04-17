@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using MediaFixerLib.Data;
 
 namespace MediaFixerLib.Workflow
 {
-    public class TrackDiscAndNumberComparer : IComparer<TagLib.File>
+    public class TrackDiscAndNumberComparer : IComparer<ITrack>
     {
-        public int Compare(TagLib.File? t1, TagLib.File? t2)
+        public int Compare(ITrack? t1, ITrack? t2)
         {
             var discComparisonResult = CompareDiscNumbers(t1, t2);
 
@@ -13,14 +14,14 @@ namespace MediaFixerLib.Workflow
                 : discComparisonResult;
         }
 
-        private static int CompareDiscNumbers(TagLib.File? t1, TagLib.File? t2)
+        private static int CompareDiscNumbers(ITrack? t1, ITrack? t2)
         {
-            return t1?.Tag.Disc.CompareTo(t2?.Tag.Disc) ?? 0;
+            return t1?.DiscNumber.CompareTo(t2?.DiscNumber) ?? 0;
         }
 
-        private static int CompareTrackNumbers(TagLib.File? t1, TagLib.File? t2)
+        private static int CompareTrackNumbers(ITrack? t1, ITrack? t2)
         {
-            return t1?.Tag.Track.CompareTo(t2?.Tag.Track) ?? 0;
+            return t1?.TrackNumber.CompareTo(t2?.TrackNumber) ?? 0;
         }
     }
 }

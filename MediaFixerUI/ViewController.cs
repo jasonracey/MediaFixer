@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AppKit;
 using Foundation;
 using MediaFixerLib;
+using MediaFixerLib.Data;
 using MediaFixerLib.Workflow;
 using MediaFixerUI.Data;
 using MediaFixerUI.Utilities;
@@ -37,7 +38,7 @@ namespace MediaFixerUI
             new AlbumWorkflowRunner(),
             new TrackWorkflowRunner());
         
-        private IEnumerable<TagLib.File> _files;
+        private IEnumerable<ITrack> _tracks;
         private string _filesPath;
         private NSTimer _timer;
 
@@ -76,7 +77,7 @@ namespace MediaFixerUI
         private void ClearDirectory(object sender, EventArgs e)
         {
             // state
-            _files = Enumerable.Empty<TagLib.File>();
+            _tracks = Enumerable.Empty<ITrack>();
 
             // select tracks box
             TextDirectory.StringValue = string.Empty;
@@ -117,12 +118,9 @@ namespace MediaFixerUI
 
         private void LoadTableTracks(string path)
         {
-            _files = GetFiles(path);
+            _tracks = GetFiles(path);
             var dataSource = new TrackTableDataSource();
-            foreach (var file in _files)
-            {
-                dataSource.Tracks.Add(new Track(file));
-            }
+            dataSource.Tracks.AddRange(_tracks);
             TableTracks.DataSource = dataSource;
             TableTracks.Delegate = new TrackTableDelegate(dataSource);
         }
@@ -259,7 +257,7 @@ namespace MediaFixerUI
             return workflows;
         }
 
-        private static IEnumerable<TagLib.File> GetFiles(string directoryPath)
+        private static IEnumerable<ITrack> GetFiles(string directoryPath)
         {
             var filePaths = Directory.GetFiles(
                 directoryPath.Trim(), 
@@ -267,8 +265,8 @@ namespace MediaFixerUI
                 SearchOption.AllDirectories);
 
             return filePaths
-                .Select(TagLib.File.Create)
-                .OrderBy(file => file.Name);
+                .Select(path => new Track(path))
+                .OrderBy(track => track.FileName);
         }
         
         private static double GetPercentCompleted(double completed, double total)
@@ -285,7 +283,7 @@ namespace MediaFixerUI
         
         private bool HaveFiles()
         {
-            return (_files?.Count() ?? 0) > 0;
+            return (_tracks?.Count() ?? 0) > 0;
         }
         
         private async Task RunWorkflows(IEnumerable<Workflow> workflows)
@@ -296,7 +294,7 @@ namespace MediaFixerUI
             try
             {
                 await Task.Run(() => MediaFixer.FixMedia(
-                    _files,
+                    _tracks,
                     workflows));
                 LoadTableTracks(_filesPath);
                 SetIdleState();

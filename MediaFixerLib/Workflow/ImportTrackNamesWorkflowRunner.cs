@@ -35,7 +35,7 @@ namespace MediaFixerLib.Workflow
 
             for (var i = 0; i < workflowRunnerInfo.Tracks.Count; i++)
             {
-                workflowRunnerInfo.Tracks[i].Tag.Title = newTrackNames[i];
+                workflowRunnerInfo.Tracks[i].TrackName = newTrackNames[i];
                 mediaFixerStatus.ItemProcessed();
             }
         }

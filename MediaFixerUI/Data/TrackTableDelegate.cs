@@ -38,16 +38,16 @@ namespace MediaFixerUI.Data
             switch (tableColumn.Title) 
             {
                 case "Track #":
-                    var trackNumber = _dataSource.Tracks[(int)row].Number;
-                    var trackCount = _dataSource.Tracks[(int)row].Count;
+                    var trackNumber = _dataSource.Tracks[(int)row].TrackNumber;
+                    var trackCount = _dataSource.Tracks[(int)row].TrackCount;
                     view.StringValue = $"{trackNumber} of {trackCount}";
                     view.Alignment = NSTextAlignment.Right;
                     break;
                 case "Title":
-                    view.StringValue = _dataSource.Tracks[(int)row].Title ?? "(null)";
+                    view.StringValue = _dataSource.Tracks[(int)row].TrackName ?? "(null)";
                     break;
                 case "Album":
-                    view.StringValue = _dataSource.Tracks[(int)row].Album ?? "(null)";
+                    view.StringValue = _dataSource.Tracks[(int)row].AlbumName ?? "(null)";
                     break;
                 case "Disc #":
                     var discNumber = _dataSource.Tracks[(int)row].DiscNumber;

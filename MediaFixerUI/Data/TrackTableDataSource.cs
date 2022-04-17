@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using AppKit;
 using Foundation;
+using MediaFixerLib.Data;
 
 namespace MediaFixerUI.Data
 {
     public class TrackTableDataSource : NSTableViewDataSource
     {
-        public readonly List<Track> Tracks = new List<Track>();
+        public readonly List<ITrack> Tracks = new List<ITrack>();
 
         public override nint GetRowCount(NSTableView tableView)
         {
@@ -33,16 +34,16 @@ namespace MediaFixerUI.Data
             switch (key) 
             {
                 case "Track #":
-                    Tracks.Sort((x, y) => GetOrder(asc) * x.Number.CompareTo(y.Number));
+                    Tracks.Sort((t1, t2) => GetOrder(asc) * t1.TrackNumber.CompareTo(t2.TrackNumber));
                     break;
                 case "Title":
-                    Tracks.Sort((x, y) => GetOrder(asc) * string.Compare(x.Title, y.Title, StringComparison.Ordinal));
+                    Tracks.Sort((t1, t2) => GetOrder(asc) * string.Compare(t1.TrackName, t2.TrackName, StringComparison.Ordinal));
                     break;
                 case "Album":
-                    Tracks.Sort((x, y) => GetOrder(asc) * string.Compare(x.Album, y.Album, StringComparison.Ordinal));
+                    Tracks.Sort((t1, t2) => GetOrder(asc) * string.Compare(t1.AlbumName, t2.AlbumName, StringComparison.Ordinal));
                     break;
                 case "Disc #":
-                    Tracks.Sort((x, y) => GetOrder(asc) * x.DiscNumber.CompareTo(y.DiscNumber));
+                    Tracks.Sort((t1, t2) => GetOrder(asc) * t1.DiscNumber.CompareTo(t2.DiscNumber));
                     break;
             }
         }

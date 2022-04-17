@@ -16,6 +16,7 @@ namespace MediaFixerLib
         public int ItemsProcessed { get; private set; }
         public int ItemsTotal { get; }
         public string Message { get; }
+        
         private MediaFixerStatus(int itemsTotal, string? message = null)
         {
             ItemsTotal = itemsTotal;
