@@ -1,7 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaFixerConsole", "MediaFixerConsole\MediaFixerConsole.csproj", "{C244324B-B847-462A-8142-4D9A9FA4791D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaFixerLib", "MediaFixerLib\MediaFixerLib.csproj", "{FFCBE2D0-2C44-4121-8E1B-D8FDD9988BFF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaFixerLib.SmokeTests", "MediaFixerLib.SmokeTests\MediaFixerLib.SmokeTests.csproj", "{C3C112C9-C15F-4DC8-B3C7-5B5F0CE088B0}"
@@ -14,10 +12,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C244324B-B847-462A-8142-4D9A9FA4791D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C244324B-B847-462A-8142-4D9A9FA4791D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C244324B-B847-462A-8142-4D9A9FA4791D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C244324B-B847-462A-8142-4D9A9FA4791D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FFCBE2D0-2C44-4121-8E1B-D8FDD9988BFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FFCBE2D0-2C44-4121-8E1B-D8FDD9988BFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFCBE2D0-2C44-4121-8E1B-D8FDD9988BFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
