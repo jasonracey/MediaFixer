@@ -55,15 +55,7 @@ namespace MediaFixerLib.Workflow
                         track.TrackName = GratefulDeadTrackNameFixer.FixTrackName(track.TrackName);
                     }
                     
-                    if (string.IsNullOrWhiteSpace(track.Comment))
-                    {
-                        var directory = track.FileName
-                            .Split("/")?[^2];
-                        
-                        track.Comment = directory ?? string.Empty;
-                    }
-                    
-                    track.Comment = track.Comment.Replace("https://archive.org/details/", string.Empty);
+                    track.Comment = track.Comment?.Replace("https://archive.org/details/", string.Empty);
                 }
 
                 mediaFixerStatus.ItemProcessed();
