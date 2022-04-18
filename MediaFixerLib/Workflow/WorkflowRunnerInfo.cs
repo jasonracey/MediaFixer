@@ -4,7 +4,14 @@ using MediaFixerLib.Data;
 
 namespace MediaFixerLib.Workflow
 {
-    public class WorkflowRunnerInfo
+    public interface IWorkflowRunnerInfo
+    {
+        IList<ITrack> Tracks { get; }
+        IEnumerable<Workflow>? Workflows { get; }
+        string? InputFilePath { get; }
+    }
+
+    public class WorkflowRunnerInfo : IWorkflowRunnerInfo
     {
         public WorkflowRunnerInfo(IList<ITrack> tracks, IEnumerable<Workflow>? workflows = null, string? inputFilePath = null)
         {

@@ -2,6 +2,6 @@ namespace MediaFixerLib.Workflow
 {
     public interface IWorkflowRunner
     {
-        void Run(WorkflowRunnerInfo workflowRunnerInfo, ref MediaFixerStatus mediaFixerStatus);
+        void Run(IWorkflowRunnerInfo workflowRunnerInfo, ref MediaFixerStatus mediaFixerStatus);
     }
 }

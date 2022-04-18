@@ -24,7 +24,7 @@ namespace MediaFixerLib.UnitTests
             _mockTrackWorkflowRunner.Object);
 
         private IEnumerable<ITrack> _tracks = new List<ITrack>();
-        private IEnumerable<Workflow.Workflow> _workflows = new List<Workflow.Workflow>();
+        private IEnumerable<MediaFixerLib.Workflow.Workflow> _workflows = new List<MediaFixerLib.Workflow.Workflow>();
 
         private static void VerifyRun(Mock<IWorkflowRunner> mockWorkflowRunner, Times times)
         {
@@ -52,9 +52,9 @@ namespace MediaFixerLib.UnitTests
                 new Mock<ITrack>().Object
             };
 
-            _workflows = new List<Workflow.Workflow>
+            _workflows = new List<MediaFixerLib.Workflow.Workflow>
             {
-                Workflow.Workflow.Create(WorkflowName.FixTrackNames)
+                MediaFixerLib.Workflow.Workflow.Create(WorkflowName.FixTrackNames)
             };
         }
 
@@ -89,9 +89,9 @@ namespace MediaFixerLib.UnitTests
                 tracks.Add(mockTrack.Object);
             }
 
-            _workflows = new List<Workflow.Workflow>
+            _workflows = new List<MediaFixerLib.Workflow.Workflow>
             {
-                Workflow.Workflow.Create(WorkflowName.MergeAlbums)
+                MediaFixerLib.Workflow.Workflow.Create(WorkflowName.MergeAlbums)
             };
 
             // act
@@ -125,7 +125,7 @@ namespace MediaFixerLib.UnitTests
         public void FixMedia_WhenNoWorkflows_ReturnsBeforeProcessing()
         {
             // arrange
-            _workflows = new List<Workflow.Workflow>();
+            _workflows = new List<MediaFixerLib.Workflow.Workflow>();
             
             // act
             _target.FixMedia(_tracks, _workflows);
@@ -140,9 +140,9 @@ namespace MediaFixerLib.UnitTests
         public void FixMedia_WhenHasMergeAlbumsWorkflow_RunsMergeAlbums()
         {
             // arrange
-            _workflows = new List<Workflow.Workflow>
+            _workflows = new List<MediaFixerLib.Workflow.Workflow>
             {
-                Workflow.Workflow.Create(WorkflowName.MergeAlbums)
+                MediaFixerLib.Workflow.Workflow.Create(WorkflowName.MergeAlbums)
             };
             
             // act
@@ -159,9 +159,9 @@ namespace MediaFixerLib.UnitTests
         public void FixMedia_WhenHasInputFilePath_RunsImportTrackNames()
         {
             // arrange
-            _workflows = new List<Workflow.Workflow>
+            _workflows = new List<MediaFixerLib.Workflow.Workflow>
             {
-                Workflow.Workflow.Create(WorkflowName.ImportTrackNames, fileName: "mock.txt")
+                MediaFixerLib.Workflow.Workflow.Create(WorkflowName.ImportTrackNames, fileName: "mock.txt")
             };
             
             // act
@@ -178,9 +178,9 @@ namespace MediaFixerLib.UnitTests
         public void FixMedia_WhenHasAlbumWorkflows_RunsUpdateAlbums()
         {
             // arrange
-            _workflows = new List<Workflow.Workflow>
+            _workflows = new List<MediaFixerLib.Workflow.Workflow>
             {
-                Workflow.Workflow.Create(WorkflowName.FixCountOfTracksOnAlbum)
+                MediaFixerLib.Workflow.Workflow.Create(WorkflowName.FixCountOfTracksOnAlbum)
             };
             
             // act
@@ -197,9 +197,9 @@ namespace MediaFixerLib.UnitTests
         public void FixMedia_WhenHasTrackWorkflows_RunsUpdateTracks()
         {
             // arrange
-            _workflows = new List<Workflow.Workflow>
+            _workflows = new List<MediaFixerLib.Workflow.Workflow>
             {
-                Workflow.Workflow.Create(WorkflowName.FixTrackNames)
+                MediaFixerLib.Workflow.Workflow.Create(WorkflowName.FixTrackNames)
             };
             
             // act

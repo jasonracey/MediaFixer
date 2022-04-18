@@ -10,7 +10,7 @@ namespace MediaFixerLib.UnitTests
         public const int MinAlbumSize = 11;
         public const int MaxAlbumSize = 17;
 
-        private static readonly Random Random = new();
+        public static readonly Random Random = new();
 
         public static IEnumerable<IEnumerable<ITrack>> BuildMockAlbums(int albumCount)
         {

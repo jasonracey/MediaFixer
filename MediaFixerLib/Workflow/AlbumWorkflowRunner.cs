@@ -6,7 +6,7 @@ namespace MediaFixerLib.Workflow
 {
     public class AlbumWorkflowRunner : IWorkflowRunner
     {
-        public void Run(WorkflowRunnerInfo workflowRunnerInfo, ref MediaFixerStatus mediaFixerStatus)
+        public void Run(IWorkflowRunnerInfo workflowRunnerInfo, ref MediaFixerStatus mediaFixerStatus)
         {
             if (workflowRunnerInfo == null) throw new ArgumentNullException(nameof(workflowRunnerInfo));
             if (workflowRunnerInfo.Tracks == null) throw new ArgumentException($"{nameof(workflowRunnerInfo.Tracks)} must not be null");
