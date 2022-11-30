@@ -48,6 +48,9 @@
     <ItemGroup>
         <Reference Include="System" />
         <Reference Include="System.Core" />
+        <Reference Include="TagLibSharp, Version=2.3.0.0, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+          <HintPath>..\packages\TagLibSharp.2.3.0\lib\netstandard2.0\TagLibSharp.dll</HintPath>
+        </Reference>
         <Reference Include="Xamarin.Mac" />
     </ItemGroup>
     <ItemGroup>
@@ -70,6 +73,7 @@
     <ItemGroup>
         <None Include="Info.plist" />
         <None Include="Entitlements.plist" />
+        <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Data\TrackTableDataSource.cs" />
