@@ -18,14 +18,6 @@ namespace MediaFixerLib.Workflow
             {
                 if (string.IsNullOrWhiteSpace(track.AlbumName))
                 {
-                    var directory = track.TrackName?
-                        .Split("/")?[^2];
-
-                    track.AlbumName = directory;
-                }
-
-                if (string.IsNullOrWhiteSpace(track.AlbumName))
-                {
                     throw new MediaFixerException(MediaFixerException.Reason.MissingAlbumName);
                 }
 
