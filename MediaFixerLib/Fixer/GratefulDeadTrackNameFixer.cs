@@ -12,6 +12,10 @@ namespace MediaFixerLib.Fixer
             {
                 trackName = GetCanonicalName(trackName);
             }
+            else if (SecondItemIsMetadata(trackNames))
+            {
+                trackName = GetCanonicalName(trackName + " >");
+            }
             else
             {
                 var tempName = string.Empty;
@@ -76,6 +80,15 @@ namespace MediaFixerLib.Fixer
             }
 
             return trackName;
+        }
+        
+        private static bool SecondItemIsMetadata(string[] trackNames)
+        {
+            return 
+                trackNames.Length == 2 && 
+                trackNames[1]
+                    .TrimStart()
+                    .StartsWith("(live at", StringComparison.OrdinalIgnoreCase);
         }
     }
 }
